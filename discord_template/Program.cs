@@ -16,12 +16,12 @@ namespace discord_template
         {
             Ids ids = new Ids(reader);
 
-            CommandSender commandSender = new CommandSender();
-            commandSender.setIDs(ids);
-            commandSender.setJsonCommands(Directory.GetCurrentDirectory() + "/commands");
-            commandSender.requestSender(); //未完成
+            CommandSender commandSender = new CommandSender(Directory.GetCurrentDirectory() + "/commands", ids);
+            commandSender.RequestSender();
 
             _ = new Program().MainAsync();
+
+            Thread.Sleep(-1);
         }
 
         public async Task MainAsync()
