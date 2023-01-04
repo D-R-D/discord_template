@@ -4,54 +4,51 @@ namespace discord_template
 {
     internal class CommandSender
     {
-        public string[]? command_list { get; private set; }
-        public IDs? ids { get; private set; }
+        public string[]? CommandList { get; private set; }
+        public Ids? Ids { get; private set; }
 
         public void setJsonCommands(string directory_path)
         {
-            if(directory_path == null) { throw new ArgumentNullException("directory_path"); }
+            if (directory_path == null) { throw new ArgumentNullException("directory_path"); }
             //ファイル一覧を取得
             if (!Directory.Exists(directory_path)) { throw new Exception("指定されたパス " + directory_path + " は存在しません。"); }
-            command_list = Directory.GetFiles(directory_path, "*.json");
-            if (command_list.Length <= 0) { throw new Exception("指定されたパス内にjsonファイルが存在しませんでした。"); }
+            CommandList = Directory.GetFiles(directory_path, "*.json");
+            if (CommandList.Length <= 0) { throw new Exception("指定されたパス内にjsonファイルが存在しませんでした。"); }
         }
 
-        public void setIDs(IDs id)
+        public void setIDs(Ids id)
         {
             if (id == null) { throw new ArgumentNullException("id"); }
-            ids = id;
+            Ids = id;
         }
 
         public void requestSender()
         {
-            if(command_list == null) { throw new NullReferenceException(nameof(command_list)); }
+            if (CommandList == null) { throw new NullReferenceException(nameof(CommandList)); }
 
             HttpRequestMessage[] requests = getHeader();
 
-            foreach (HttpRequestMessage request in requests)
-            {
-                foreach (string json_command in command_list)
-                {
+            foreach (HttpRequestMessage request in requests) {
+                foreach (string json_command in CommandList) {
                     //getHaderとかいろいろ使っていろいろする
                 }
             }
         }
         private HttpRequestMessage[] getHeader()
         {
-            if (ids == null) { throw new NullReferenceException("ids"); }
-            if (ids.guild_ids == null) { throw new NullReferenceException("ids.guild_ids"); }
-            HttpRequestMessage[] request = new HttpRequestMessage[ids.guild_ids.Length];
+            if (Ids == null) { throw new NullReferenceException("ids"); }
+            if (Ids.m_GuildIds == null) { throw new NullReferenceException("ids.guild_ids"); }
+            HttpRequestMessage[] request = new HttpRequestMessage[Ids.m_GuildIds.Length];
             int idcount = 0;
-            foreach (string guild_id in ids.guild_ids)
-            {
-                if (Tools.checkStringISNullorEmpty(guild_id)) { throw new Exception("guild_idが不正です。\nguild_idがnull、もしくは空白です。"); }
-                if (Tools.checkStringISNullorEmpty(ids.application_id)) { throw new Exception("application_idが不正です。\napplication_idがnull、もしくは空白です。"); }
-                if (Tools.checkStringISNullorEmpty(ids.token)) { throw new Exception("Tokenが不正です。\nTokenがnull、もしくは空白です。"); }
+            foreach (string guild_id in Ids.m_GuildIds) {
+                if (guild_id.IsNullorEmpty()) { throw new Exception("guild_idが不正です。\nguild_idがnull、もしくは空白です。"); }
+                if (Ids.m_ApplicationId.IsNullorEmpty()) { throw new Exception("application_idが不正です。\napplication_idがnull、もしくは空白です。"); }
+                if (Ids.m_Token.IsNullorEmpty()) { throw new Exception("Tokenが不正です。\nTokenがnull、もしくは空白です。"); }
 
-                string url = "https://discord.com/api/v8/applications/" + ids.application_id + "/guilds/" + guild_id + "/commands";
+                string url = "https://discord.com/api/v8/applications/" + Ids.m_ApplicationId + "/guilds/" + guild_id + "/commands";
                 UriBuilder builder = new UriBuilder(new Uri(url));
                 request[idcount] = new HttpRequestMessage(HttpMethod.Post, builder.Uri);
-                request[idcount].Headers.Add("Authorization", "Bot " + ids.token);
+                request[idcount].Headers.Add("Authorization", "Bot " + Ids.m_Token);
 
                 idcount++;
             }
@@ -59,9 +56,9 @@ namespace discord_template
             return request;
         }
         private HttpRequestMessage requestContentBuilder(HttpRequestMessage requestMessage, string json_command)
-        {        
+        {
             //渡されたjson形式のコマンド情報をコンテンツに設定する
-            if (Tools.checkStringISNullorEmpty(json_command)) { throw new Exception("json_commandが不正です。\njson_commandがnullもしくは空白です。\n"); }
+            if (json_command.IsNullorEmpty()) { throw new Exception("json_commandが不正です。\njson_commandがnullもしくは空白です。\n"); }
             requestMessage.Content = new StringContent(json_command, Encoding.UTF8, "application/json");
 
             return requestMessage;

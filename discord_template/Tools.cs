@@ -1,11 +1,11 @@
 ﻿namespace discord_template
 {
-    public class Tools
+    public static class Tools
     {
-        public static bool checkStringISNullorEmpty(string? string_item)
+        public static bool IsNullorEmpty(this string? str)
         {
-            if (string_item == null) { return true; }
-            if (string_item == "") { return true; }
+            if (str == null) { return true; }
+            if (str == "") { return true; }
             return false;
         }
     }
