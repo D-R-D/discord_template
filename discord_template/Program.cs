@@ -1,7 +1,7 @@
-﻿using System.Configuration;
-using Discord;
-using Discord.WebSocket;
+﻿using Discord;
 using Discord.Commands;
+using Discord.WebSocket;
+using System.Configuration;
 
 namespace discord_template
 {
@@ -14,9 +14,8 @@ namespace discord_template
 
         public static void Main(string[] args)
         {
-            IDs ids = new IDs();
-            ids.setIDValues(reader);
-            
+            Ids ids = new Ids(reader);
+
             CommandSender commandSender = new CommandSender();
             commandSender.setIDs(ids);
             commandSender.setJsonCommands("json path");
@@ -45,12 +44,10 @@ namespace discord_template
 
         private Task Log(LogMessage message)
         {
-            if (message.Exception is CommandException cmdException)
-            {
+            if (message.Exception is CommandException cmdException) {
                 Console.WriteLine($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}" + $" failed to execute in {cmdException.Context.Channel}.");
                 Console.WriteLine(cmdException);
-            }
-            else { Console.WriteLine($"[General/{message.Severity}] {message}"); }
+            } else { Console.WriteLine($"[General/{message.Severity}] {message}"); }
 
             return Task.CompletedTask;
         }
