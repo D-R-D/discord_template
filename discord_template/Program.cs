@@ -7,7 +7,6 @@ namespace discord_template
 {
     class Program
     {
-        public static IDs ids = new IDs();
         public static AppSettingsReader reader = new AppSettingsReader();
 
         private DiscordSocketClient? _client;
@@ -15,7 +14,13 @@ namespace discord_template
 
         public static void Main(string[] args)
         {
+            IDs ids = new IDs();
             ids.setIDValues(reader);
+            
+            CommandSender commandSender = new CommandSender();
+            commandSender.setIDs(ids);
+            commandSender.setJsonCommands("json path");
+            commandSender.requestSender(); //未完成
 
             _ = new Program().MainAsync();
         }

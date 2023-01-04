@@ -32,7 +32,7 @@ namespace discord_template
             {
                 foreach (string json_command in command_list)
                 {
-
+                    //getHaderとかいろいろ使っていろいろする
                 }
             }
         }
