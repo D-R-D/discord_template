@@ -9,9 +9,9 @@ namespace discord_template
 
         public void setJsonCommands(string directory_path)
         {
-            if (directory_path == null) { throw new ArgumentNullException("directory_path"); }
+            if (directory_path == null) { throw new Exception($"指定されたパス {directory_path} は存在しません。"); }
             //ファイル一覧を取得
-            if (!Directory.Exists(directory_path)) { throw new Exception("指定されたパス " + directory_path + " は存在しません。"); }
+            if (!Directory.Exists(directory_path)) { throw new Exception($"指定されたパス {directory_path} は存在しません。"); }
             CommandList = Directory.GetFiles(directory_path, "*.json");
             if (CommandList.Length <= 0) { throw new Exception("指定されたパス内にjsonファイルが存在しませんでした。"); }
         }
@@ -28,9 +28,17 @@ namespace discord_template
 
             HttpRequestMessage[] requests = getHeader();
 
-            foreach (HttpRequestMessage request in requests) {
-                foreach (string json_command in CommandList) {
-                    //getHaderとかいろいろ使っていろいろする
+            foreach (HttpRequestMessage request in requests)
+            {
+                foreach (string json_command in CommandList)
+                {
+                    //コンテンツを設定
+                    if (Tools.IsNullOrEmpty(json_command)) { throw new Exception("json_commandが不正です。\njson_commandがnullもしくは空白です。"); }
+                    HttpRequestMessage sendRequest = requestContentBuilder(request,json_command);
+
+                    //送信する
+                    HttpClient client = new HttpClient();
+                    HttpResponseMessage response = client.Send(sendRequest);
                 }
             }
         }

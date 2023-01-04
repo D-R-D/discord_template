@@ -18,7 +18,7 @@ namespace discord_template
 
             CommandSender commandSender = new CommandSender();
             commandSender.setIDs(ids);
-            commandSender.setJsonCommands("json path");
+            commandSender.setJsonCommands(Directory.GetCurrentDirectory() + "/commands");
             commandSender.requestSender(); //未完成
 
             _ = new Program().MainAsync();
