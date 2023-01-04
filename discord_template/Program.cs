@@ -16,10 +16,8 @@ namespace discord_template
         {
             Ids ids = new Ids(reader);
 
-            CommandSender commandSender = new CommandSender();
-            commandSender.setIDs(ids);
-            commandSender.setJsonCommands(Directory.GetCurrentDirectory() + "/commands");
-            commandSender.requestSender(); //未完成
+            CommandSender commandSender = new CommandSender("json path", ids);
+            commandSender.RequestSender(); //未完成
 
             _ = new Program().MainAsync();
         }
