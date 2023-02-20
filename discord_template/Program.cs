@@ -16,7 +16,7 @@ namespace discord_template
         {
             Ids ids = new Ids(reader);
 
-            CommandSender commandSender = new CommandSender(Directory.GetCurrentDirectory() + "/commands", ids);
+            CommandSender commandSender = new CommandSender(Directory.GetCurrentDirectory() + "/commands", ids, reader.GetValue("discordapi_version",typeof(string)).ToString()!);
             commandSender.RequestSender();
 
             _ = new Program().MainAsync();
