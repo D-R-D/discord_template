@@ -55,7 +55,7 @@ namespace discord_template
         public async Task Client_Ready()
         {
             //クライアント立ち上げ時の処理
-
+            await Task.CompletedTask;
         }
         private async Task SlashCommandHandler(SocketSlashCommand command)
         {

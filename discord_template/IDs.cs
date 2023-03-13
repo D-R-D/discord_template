@@ -27,9 +27,42 @@ namespace discord_template
             m_ApplicationId = applicationId!;
 
             string? adminId = (string?)reader.GetValue("admin_id", typeof(string));
-            if (applicationId.IsNullOrEmpty()) { throw new Exception("application_idが不正です。\napplication_idがnullもしくは空白です。"); }
-            m_AdminIds = applicationId!.Split(',');
+            if (adminId.IsNullOrEmpty()) { throw new Exception("application_idが不正です。\napplication_idがnullもしくは空白です。"); }
+            m_AdminIds = adminId!.Split(',');
         }
 
+        public bool CheckAdminId(ulong userid)
+        {
+            foreach(string stradminid in m_AdminIds)
+            {
+                ulong adminid = 0;
+                if(ulong.TryParse(stradminid, out adminid))
+                {
+                    if(adminid == userid)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool CheckGuildId(ulong guild_id)
+        {
+            foreach (string strguildid in m_GuildIds)
+            {
+                ulong guildid = 0;
+                if (ulong.TryParse(strguildid, out guildid))
+                {
+                    if (guildid == guild_id)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }
