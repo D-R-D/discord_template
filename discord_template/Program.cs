@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using System.Configuration;
 
@@ -11,13 +12,13 @@ namespace discord_template
 
         private DiscordSocketClient? _client;
         private static CommandService? _commands;
+        private InteractionService? _interactionService;
 
         public static void Main(string[] args)
         {
-            Ids ids = new Ids(reader);
-
-            CommandSender commandSender = new CommandSender(Directory.GetCurrentDirectory() + "/commands", ids, reader.GetValue("discordapi_version",typeof(string)).ToString()!);
-            commandSender.RequestSender();
+            // ギルドコマンドを登録する
+            CommandSender.RegisterGuildCommands();
+            Console.WriteLine("CommandSender SUCCESS!!");
 
             _ = new Program().MainAsync();
 
@@ -34,7 +35,7 @@ namespace discord_template
 
             _client.Ready += Client_Ready;
             _client.SlashCommandExecuted += SlashCommandHandler;
-
+            _interactionService = new InteractionService(_client.Rest);
 
             await _client.LoginAsync(TokenType.Bot, reader.GetValue("token", typeof(string)).ToString());
             await _client.StartAsync();
@@ -45,7 +46,8 @@ namespace discord_template
 
         private Task Log(LogMessage message)
         {
-            if (message.Exception is CommandException cmdException) {
+            if (message.Exception is CommandException cmdException)
+            {
                 Console.WriteLine($"[Command/{message.Severity}] {cmdException.Command.Aliases.First()}" + $" failed to execute in {cmdException.Context.Channel}.");
                 Console.WriteLine(cmdException);
             } else { Console.WriteLine($"[General/{message.Severity}] {message}"); }
@@ -57,6 +59,9 @@ namespace discord_template
             //クライアント立ち上げ時の処理
             await Task.CompletedTask;
         }
+
+        //
+        // そのうち消すかも
         private async Task SlashCommandHandler(SocketSlashCommand command)
         {
             //コマンド受信時の処理
